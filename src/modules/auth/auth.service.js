@@ -1,0 +1,170 @@
+const bcrypt = require('bcrypt');
+
+const repository = require('./auth.repository');
+const { v4: uuidv4 } = require('uuid');
+const transporter = require('../../config/mailer');
+
+const { generateToken } =
+    require('../../utils/jwt');
+const generateMatricule =
+require('../../utils/matricule');
+
+const {
+    notifyAdmins,
+    notifyMember
+} = require('../../services/notification.service');
+
+
+
+const register = async (data) => {
+
+    
+
+    const existingUser =
+        await repository.findByEmail(
+            data.email
+        );
+
+    if (existingUser) {
+
+        throw new Error(
+            'Cet email existe déjà'
+        );
+
+    }
+
+    const hashedPassword =
+        await bcrypt.hash(
+            data.password,
+            10
+        );
+
+    const member = {
+
+        matricule:
+            generateMatricule(),
+
+        nom_complet:
+            data.nom_complet,
+
+        email:
+            data.email,
+
+        telephone:
+            data.telephone,
+
+        sexe:
+            data.sexe,
+
+        mot_de_passe:
+            hashedPassword,
+
+        statut:
+            'inactif',
+
+        role:
+            'membre'
+    };
+
+    const id =
+        await repository.create(
+            member
+        );
+
+    const new_member =
+        await repository.findById(
+            id
+        );
+
+    const link = `${process.env.BASE_URL}/api/adhesion/activate/${new_member.matricule}`;
+        // 3. email admin
+        await transporter.sendMail({
+            from: '"IDEM PLANET" <lyiamdev8@gmail.com>',
+            to: process.env.ADMIN_EMAIL,
+            subject: "Nouvelle demande d'adhésion",
+            html: `
+                <h3>Nouvelle demande membre</h3>
+                <p>${data.nom_complet} (${data.email})</p>
+                <a href="${link}">Activer ce membre</a>
+            `
+        });
+
+                // 4. notification socket admin (temps réel)
+        notifyAdmins(
+            'admin:new_adhesion',
+            {
+                id: new_member.id,
+                nom: new_member.nom_complet,
+                email: new_member.email
+            }
+        );
+
+        notifyMember(
+            new_member.id,
+            'member:activated',
+            {
+                message:
+                    'Votre compte a été activé'
+            }
+        );
+
+    return {
+        id,
+        message:
+            'Inscription effectuée avec succès'
+    };
+};
+
+const login = async (
+    email,
+    password
+) => {
+
+    const user =
+        await repository.findByEmail(email);
+
+    if (!user) {
+        throw new Error(
+            'Email ou mot de passe incorrect'
+        );
+    }
+
+    const valid =
+        await bcrypt.compare(
+            password,
+            user.mot_de_passe
+        );
+
+    if (!valid) {
+        throw new Error(
+            'Email ou mot de passe incorrect'
+        );
+    }
+
+    if (user.statut !== 'actif') {
+
+        throw new Error(
+            'Votre compte est en attente de validation'
+        );
+
+    }
+
+    const token =
+        generateToken(user);
+
+    return {
+        token,
+        user: {
+            id: user.id,
+            nom_complet: user.nom_complet,
+            email: user.email,
+            role: user.role,
+            statut: user.statut
+        }
+    };
+};
+
+module.exports = {
+    login,
+    register
+};

@@ -1,0 +1,43 @@
+// backend/config/emailConfig.js
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config();
+
+// Configuration du transporteur SMTP pour Gmail
+const transporter = nodemailer.createTransport({
+    // service: 'gmail',
+    // auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS
+    // }
+});
+
+// Vérifier la connexion SMTP
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('❌ Erreur de connexion SMTP:', error);
+    } else {
+        console.log('✅ Serveur SMTP prêt à envoyer des emails');
+    }
+});
+
+// Fonction pour envoyer un email
+const envoyerEmail = async (to, sujet, html) => {
+    // try {
+    //     const mailOptions = {
+    //         from: `"IDEM Planet" <${process.env.EMAIL_USER}>`,
+    //         to: to,
+    //         subject: sujet,
+    //         html: html
+    //     };
+
+    //     const info = await transporter.sendMail(mailOptions);
+    //     console.log(`✅ Email envoyé à ${to}:`, info.messageId);
+    //     return { success: true, messageId: info.messageId };
+    // } catch (error) {
+    //     console.error('❌ Erreur envoi email:', error);
+    //     return { success: false, error: error.message };
+    // }
+};
+
+module.exports = { transporter, envoyerEmail };
