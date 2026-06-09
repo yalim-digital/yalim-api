@@ -2,7 +2,10 @@ const bcrypt = require('bcrypt');
 
 const repository = require('./auth.repository');
 const { v4: uuidv4 } = require('uuid');
-const transporter = require('../../config/mailer');
+// const transporter = require('../../config/mailer');
+const {
+    sendActivationEmail
+} = require('../../config/mailer');
 
 const { generateToken } =
     require('../../utils/jwt');
@@ -78,16 +81,21 @@ const register = async (data) => {
 
     const link = `${process.env.BASE_URL}/api/adhesion/activate/${new_member.matricule}`;
         // 3. email admin
-        await transporter.sendMail({
-            from: '"IDEM PLANET" <lyiamdev8@gmail.com>',
-            to: process.env.ADMIN_EMAIL,
-            subject: "Nouvelle demande d'adhésion",
-            html: `
-                <h3>Nouvelle demande membre</h3>
-                <p>${data.nom_complet} (${data.email})</p>
-                <a href="${link}">Activer ce membre</a>
-            `
-        });
+        // await transporter.sendMail({
+        //     from: '"IDEM PLANET" <lyiamdev8@gmail.com>',
+        //     to: process.env.ADMIN_EMAIL,
+        //     subject: "Nouvelle demande d'adhésion",
+        //     html: `
+        //         <h3>Nouvelle demande membre</h3>
+        //         <p>${data.nom_complet} (${data.email})</p>
+        //         <a href="${link}">Activer ce membre</a>
+        //     `
+        // });
+    await sendActivationEmail(
+        process.env.ADMIN_EMAIL, 
+        data,
+        link
+    );
 
                 // 4. notification socket admin (temps réel)
         notifyAdmins(
