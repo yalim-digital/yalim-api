@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 
 const repository = require('./auth.repository');
-const { v4: uuidv4 } = require('uuid');
 // const transporter = require('../../config/mailer');
 const {
     sendActivationEmail
@@ -41,6 +40,7 @@ const register = async (data) => {
             data.password,
             10
         );
+        console.log(generateMatricule());
 
         const member = {
 
@@ -81,7 +81,7 @@ const register = async (data) => {
                 hashedPassword,
 
             statut:
-                'inactif',
+                'active',
 
             type_membre:
                 data.type_membre,
@@ -170,7 +170,7 @@ const login = async (
         );
     }
 
-    if (user.statut !== 'actif') {
+    if (user.statut !== 'active') {
 
         throw new Error(
             'Votre compte est en attente de validation'
