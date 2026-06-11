@@ -29,8 +29,16 @@ router.get(
     controller.me
 );
 
+const upload =
+    require(
+        '../../middlewares/upload.middleware'
+    );
+
 router.post(
     '/register',
+    upload.single(
+        'photo_identite'
+    ),
     validate(registerSchema),
     controller.register
 );

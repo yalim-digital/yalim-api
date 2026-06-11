@@ -42,32 +42,53 @@ const register = async (data) => {
             10
         );
 
-    const member = {
+        const member = {
 
-        matricule:
-            generateMatricule(),
+            matricule:
+                generateMatricule(),
 
-        nom_complet:
-            data.nom_complet,
+            nom_complet:
+                data.nom_complet,
 
-        email:
-            data.email,
+            email:
+                data.email,
 
-        telephone:
-            data.telephone,
+            telephone:
+                data.telephone,
 
-        sexe:
-            data.sexe,
+            mention:
+                data.mention,
 
-        mot_de_passe:
-            hashedPassword,
+            parcours:
+                data.parcours,
 
-        statut:
-            'inactif',
+            niveau:
+                data.niveau,
 
-        role:
-            'membre'
-    };
+            date_naissance:
+                data.date_naissance,
+
+            photo_identite:
+                data.photo_identite,
+
+            sexe:
+                data.sexe,
+
+            cin:
+                data.cin,
+
+            mot_de_passe:
+                hashedPassword,
+
+            statut:
+                'inactif',
+
+            type_membre:
+                data.type_membre,
+
+            role:
+                'membre'
+        };
 
     const id =
         await repository.create(
@@ -109,10 +130,10 @@ const register = async (data) => {
 
         notifyMember(
             new_member.id,
-            'member:activated',
+            'member:pending',
             {
                 message:
-                    'Votre compte a été activé'
+                     "Votre demande d'adhésion a été envoyée et attend la validation d'un administrateur."
             }
         );
 

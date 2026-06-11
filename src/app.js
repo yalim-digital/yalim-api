@@ -6,7 +6,22 @@ const morgan = require('morgan');
 const errorHandler =
 require('./middlewares/error.middleware');
 
+const path =
+    require('path');
+
+
+
 const app = express();
+
+app.use(
+    '/uploads',
+    express.static(
+        path.join(
+            __dirname,
+            '../uploads'
+        )
+    )
+);
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,

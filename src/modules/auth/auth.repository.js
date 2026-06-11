@@ -26,8 +26,16 @@ const findById = async (id) => {
             nom_complet,
             email,
             telephone,
-            role,
+            mention,
+            parcours,
+            niveau,
+            date_naissance,
+            photo_identite,
+            sexe,
+            cin,
             statut,
+            type_membre,
+            role,
             created_at
         FROM membres
         WHERE id = ?
@@ -49,22 +57,36 @@ const create = async (data) => {
             nom_complet,
             email,
             telephone,
+            mention,
+            parcours,
+            niveau,
+            date_naissance,
+            photo_identite,
             sexe,
+            cin,
             mot_de_passe,
             statut,
+            type_membre,
             role
         )
         VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
             data.matricule,
             data.nom_complet,
             data.email,
             data.telephone,
+            data.mention,
+            data.parcours,
+            data.niveau,
+            data.date_naissance,
+            data.photo_identite,
             data.sexe,
+            data.cin,
             data.mot_de_passe,
             data.statut,
+            data.type_membre,
             data.role
         ]
     );

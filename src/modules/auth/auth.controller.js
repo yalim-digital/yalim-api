@@ -10,9 +10,17 @@ const register = async (
 
     try {
 
+        const payload = {
+            ...req.body,
+            photo_identite:
+                req.file
+                    ? req.file.filename
+                    : null
+        };
+
         const result =
             await service.register(
-                req.body
+                payload
             );
 
         res.status(201)
