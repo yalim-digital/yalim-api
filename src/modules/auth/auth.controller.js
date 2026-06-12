@@ -60,13 +60,15 @@ const login = async (
     }
 };
 
-const me = async (
-    req,
-    res
-) => {
 
-    res.json(req.user);
+const me = async (req, res, next) => {
+  try {
+    const user = await service.getMe(req.user.id);
 
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

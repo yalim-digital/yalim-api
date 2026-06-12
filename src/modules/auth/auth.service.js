@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 const repository = require('./auth.repository');
 const { v4: uuidv4 } = require('uuid');
@@ -17,7 +18,35 @@ const {
     notifyMember
 } = require('../../services/notification.service');
 
+const getMe = async (userId) => {
+  const user = await repository.findById(userId);
 
+  if (!user) {
+    throw new Error("Utilisateur introuvable");
+  }
+
+  return {
+    id: user.id,
+    matricule: user.matricule,
+    nom_complet: user.nom_complet,
+    email: user.email,
+    telephone: user.telephone,
+    mention: user.mention,
+    parcours: user.parcours,
+    niveau: user.niveau,
+    date_naissance: user.date_naissance,
+    sexe: user.sexe,
+    cin: user.cin,
+    statut: user.statut,
+    type_membre: user.type_membre,
+    role: user.role,
+    photo_identite: user.photo_identite,
+    photo_url: user.photo_identite
+  ? `${process.env.BASE_URL}/uploads/${user.photo_identite}`
+  : null,
+    created_at: user.created_at
+  };
+};
 
 const register = async (data) => {
 
@@ -195,5 +224,6 @@ const login = async (
 
 module.exports = {
     login,
-    register
+    register,
+    getMe
 };
