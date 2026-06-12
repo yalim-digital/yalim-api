@@ -209,24 +209,30 @@ const login = async (
 
     const token =
         generateToken(user);
-            matricule,
-            nom_complet,
-            email,
-            telephone,
-            mention,
-            parcours,
-            niveau,
-            date_naissance,
-            photo_identite,
-            sexe,
-            cin,
-            statut,
-            type_membre,
-            role,
-            created_at
+           
     return {
         token,
-        user
+        user: {
+            id: user.id,
+            nom_complet: user.nom_complet,
+            email: user.email,
+            matricule: user.matricule,
+                        telephone: user.telephone,
+            mention: user.mention,
+                        parcours: user.parcours,
+            niveau: user.niveau,
+                        email: user.email,
+            date_naissance: user.date_naissance,
+                        photo_identite: user.photo_identite,
+            sexe: user.sexe,
+                        email: user.email,
+            cin: user.cin,
+                        email: user.email,
+            type_membre: user.type_membre,
+            created_at:user.created_at,
+            role: user.role,
+            statut: user.statut
+        }
     };
 };
 
