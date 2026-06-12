@@ -4,25 +4,10 @@ const findByEmail = async (email) => {
 
     const [rows] = await db.query(
         `
-        SELECT
-            id,
-            matricule,
-            nom_complet,
-            email,
-            telephone,
-            mention,
-            parcours,
-            niveau,
-            date_naissance,
-            photo_identite,
-            sexe,
-            cin,
-            statut,
-            type_membre,
-            role,
-            created_at
+        SELECT *
         FROM membres
         WHERE email = ?
+        AND deleted_at IS NULL
         LIMIT 1
         `,
         [email]
