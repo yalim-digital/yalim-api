@@ -209,16 +209,24 @@ const login = async (
 
     const token =
         generateToken(user);
-
+            matricule,
+            nom_complet,
+            email,
+            telephone,
+            mention,
+            parcours,
+            niveau,
+            date_naissance,
+            photo_identite,
+            sexe,
+            cin,
+            statut,
+            type_membre,
+            role,
+            created_at
     return {
         token,
-        user: {
-            id: user.id,
-            nom_complet: user.nom_complet,
-            email: user.email,
-            role: user.role,
-            statut: user.statut
-        }
+        user
     };
 };
 
