@@ -14,13 +14,12 @@ const path =
 const app = express();
 
 app.use(
-    '/uploads',
-    express.static(
-        path.join(
-            __dirname,
-            '../uploads'
-        )
-    )
+  '/uploads',
+  express.static(path.join(__dirname, '../uploads'), {
+    setHeaders: (res) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    }
+  })
 );
 
 const allowedOrigins = process.env.FRONTEND_URL.split(",");
@@ -38,7 +37,11 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  })
+);
 
 app.use(compression());
 
