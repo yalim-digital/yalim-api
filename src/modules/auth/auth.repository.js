@@ -94,8 +94,52 @@ const create = async (data) => {
     return result.insertId;
 };
 
+const updateProfil = async (
+    id,
+    photo_identite
+) => {
+
+    await db.query(
+        `
+        UPDATE membres
+        SET
+            photo_identite = ?
+        WHERE id = ?
+        `,
+        [
+            photo_identite,
+            id
+        ]
+    );
+
+    return true;
+};
+
+const updatePassword = async (
+    id,
+    password
+) => {
+
+    await db.query(
+        `
+        UPDATE membres
+        SET
+            mot_de_passe = ?
+        WHERE id = ?
+        `,
+        [
+            password,
+            id
+        ]
+    );
+
+    return true;
+};
+
 module.exports = {
     findByEmail,
     findById,
-    create
+    create,
+    updateProfil,
+    updatePassword
 };

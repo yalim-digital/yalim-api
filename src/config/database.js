@@ -18,10 +18,10 @@ const pool = mysql.createPool({
     acquireTimeout: 2000000,
     timeout: 2000000,
 
-    ssl: {
-        ca: fs.readFileSync('./src/config/ca.pem'),
-        rejectUnauthorized: true
-    }
+    // ssl: {
+    //     ca: fs.readFileSync('./src/config/ca.pem'),
+    //     rejectUnauthorized: true
+    // }
 });
 
 pool.getConnection((err, connection) => {

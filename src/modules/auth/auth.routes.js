@@ -43,4 +43,17 @@ router.post(
     controller.register
 );
 
+router.put(
+  "/profile-photo",
+  authenticate,
+  upload.single("photo_identite"),
+  controller.updateProfilePhoto
+);
+
+router.put(
+  "/password-update",
+  authenticate,
+  controller.updatePassword
+);
+
 module.exports = router;

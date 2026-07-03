@@ -1,72 +1,97 @@
 const multer = require('multer');
-const path = require('path');
 
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage();
 
-    destination: (req, file, cb) => {
+const fileFilter = (req, file, cb) => {
 
-        cb(null, 'uploads/members');
+    if (!file.mimetype.startsWith('image/')) {
 
-    },
-
-    filename: (req, file, cb) => {
-
-        const uniqueName =
-            Date.now() +
-            '-' +
-            Math.round(Math.random() * 1E9) +
-            path.extname(file.originalname);
-
-        cb(null, uniqueName);
-
-    }
-});
-
-const fileFilter = (
-    req,
-    file,
-    cb
-) => {
-
-    const allowedMimeTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/webp'
-    ];
-
-    if (
-        allowedMimeTypes.includes(
-            file.mimetype
-        )
-    ) {
-
-        cb(null, true);
-
-    } else {
-
-        cb(
-            new Error(
-                'Seuls les fichiers JPG, JPEG, PNG et WEBP sont autorisés.'
-            ),
+        return cb(
+            new Error('Seules les images sont autorisées'),
             false
         );
-
     }
 
+    cb(null, true);
 };
 
-const upload = multer({
-
+module.exports = multer({
     storage,
-
     fileFilter,
-
     limits: {
-        fileSize:
-            2 * 1024 * 1024 // 2 Mo
+        fileSize: 50 * 1024 * 1024 // 2 Mo
     }
-
 });
 
-module.exports = upload;
+// const multer = require('multer');
+// const path = require('path');
+
+// const storage = multer.diskStorage({
+
+//     destination: (req, file, cb) => {
+
+//         cb(null, 'uploads/members');
+
+//     },
+
+//     filename: (req, file, cb) => {
+
+//         const uniqueName =
+//             Date.now() +
+//             '-' +
+//             Math.round(Math.random() * 1E9) +
+//             path.extname(file.originalname);
+
+//         cb(null, uniqueName);
+
+//     }
+// });
+
+// const fileFilter = (
+//     req,
+//     file,
+//     cb
+// ) => {
+
+//     const allowedMimeTypes = [
+//         'image/jpeg',
+//         'image/jpg',
+//         'image/png',
+//         'image/webp'
+//     ];
+
+//     if (
+//         allowedMimeTypes.includes(
+//             file.mimetype
+//         )
+//     ) {
+
+//         cb(null, true);
+
+//     } else {
+
+//         cb(
+//             new Error(
+//                 'Seuls les fichiers JPG, JPEG, PNG et WEBP sont autorisés.'
+//             ),
+//             false
+//         );
+
+//     }
+
+// };
+
+// const upload = multer({
+
+//     storage,
+
+//     fileFilter,
+
+//     limits: {
+//         fileSize:
+//             2 * 1024 * 1024 // 2 Mo
+//     }
+
+// });
+
+// module.exports = upload;

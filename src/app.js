@@ -61,6 +61,126 @@ app.use(
     authRoutes
 );
 
+const activitesRoutes =
+require('./modules/activites/activites.routes');
+
+
+app.use(
+    '/api/activites',
+    activitesRoutes
+);
+
+const participationsRoutes =
+require(
+    './modules/participations/participations.routes'
+);
+
+app.use(
+    '/api/participations',
+    participationsRoutes
+);
+
+const publicationsRoutes =
+require(
+    './modules/publications/publications.routes'
+);
+
+app.use(
+    '/api/publications',
+    publicationsRoutes
+);
+
+const commentairesRoutes =
+    require('./modules/commentaires/commentaires.routes');
+
+
+app.use(
+    '/api',
+    commentairesRoutes
+);
+
+const likesRoutes =
+    require('./modules/likes/likes.routes');
+
+
+
+app.use(
+    '/api',
+    likesRoutes
+);
+
+const typesCotisationsRoutes =
+require('./modules/typesCotisations/typesCotisations.routes');
+
+
+app.use(
+    '/api/types-cotisations',
+    typesCotisationsRoutes
+);
+
+const cotisationsRoutes =
+require('./modules/cotisations/cotisations.routes');
+
+
+app.use(
+    '/api/cotisations',
+    cotisationsRoutes
+);
+
+const modesPaiementsRoutes =
+require('./modules/modesPaiements/modesPaiements.routes');
+
+
+app.use(
+    '/api/modes-paiements',
+    modesPaiementsRoutes
+);
+
+const paiementsRoutes =
+require('./modules/paiements/paiements.routes');
+
+
+app.use(
+    "/api/paiements",
+    paiementsRoutes
+);
+
+const homeheroRoutes =
+require('./modules/homeHero/homeHero.routes');
+
+
+app.use(
+    "/api/home-hero",
+    homeheroRoutes
+);
+
+const impactsRoutes =
+require('./modules/impacts/impacts.routes');
+
+
+app.use(
+    "/api/impacts",
+    impactsRoutes
+);
+const histoireRoutes =
+require('./modules/homeHistoire/homeHistoire.routes');
+
+
+app.use(
+    "/api/home-histoire",
+    histoireRoutes
+);
+
+const timelineRoutes =
+require('./modules/timeline/timeline.routes');
+
+
+app.use(
+    "/api/timeline",
+    timelineRoutes
+);
+
+
 app.use(errorHandler);
 
 module.exports = app;

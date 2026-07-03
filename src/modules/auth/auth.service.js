@@ -20,9 +20,10 @@ const {
 
 const getMe = async (userId) => {
   const user = await repository.findById(userId);
-
+    console.log(userId);
   if (!user) {
-    throw new Error("Utilisateur introuvable");
+    console.log(userId);
+    throw new Error("Utilisateur introuvable"+userId);
   }
 
   return {
@@ -236,8 +237,53 @@ const login = async (
     };
 };
 
+const updatePhoto = async (
+  userId,
+  data
+) => {
+
+  const response = await repository.updateProfil(
+    userId,data.photo_identite
+  );
+
+  const userConnected=await getMe(userId);
+
+  return {
+    ...response,
+    user: userConnected
+  };
+
+};
+
+const updatePassword = async (
+  userId,
+  photo_identite
+) => {
+
+  const hashedPassword =
+        await bcrypt.hash(
+            photo_identite,
+            10
+        );
+
+
+  const response = await repository.updatePassword(
+    userId,hashedPassword
+  );
+
+  const userConnected=await getMe(userId);
+
+  return {
+    ...response,
+    user: userConnected
+  };
+
+};
+
 module.exports = {
     login,
     register,
-    getMe
+    getMe,
+    updatePhoto,
+    updatePassword
 };
