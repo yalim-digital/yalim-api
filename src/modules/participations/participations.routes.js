@@ -17,11 +17,7 @@ const {
 } =
     require('../../middlewares/role.middleware');
 
-router.post(
-    '/:activiteId',
-    authenticate,
-    controller.participate
-);
+
 
 router.delete(
     '/:activiteId',
@@ -96,6 +92,12 @@ router.post(
     authenticate,
     isAdmin,
     controller.scanPreview
+);
+
+router.post(
+    '/:activiteId',
+    authenticate,
+    controller.participate
 );
 
 // router.post(
