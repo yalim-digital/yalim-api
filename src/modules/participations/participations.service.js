@@ -40,6 +40,8 @@ const activity =
 
     }
 
+    
+
 
 
     const existing =
@@ -433,7 +435,17 @@ if(!participation){
 
 }
 
+if(
+        new Date(
+            participation.date_debut
+        ) > new Date()
+    ){
 
+        throw new Error(
+            "Impossible d'assister à une activité à venir"
+        );
+
+    }
 
 if(
 participation.qr_used
