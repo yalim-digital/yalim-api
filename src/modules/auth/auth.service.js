@@ -13,10 +13,12 @@ const { generateToken } =
 const generateMatricule =
 require('../../utils/matricule');
 
-const {
-    notifyAdmins,
-    notifyMember
-} = require('../../services/notification.service');
+// const {
+//     notifyAdmins,
+//     notifyMember
+// } = require('../../services/notification.service');
+const notificationService =
+    require('../notifications/notification.service');
 
 const getMe = async (userId) => {
   const user = await repository.findById(userId);
@@ -41,6 +43,9 @@ const getMe = async (userId) => {
     statut: user.statut,
     type_membre: user.type_membre,
     role: user.role,
+    is_active: user.is_active,
+    note: user.note,
+    active_par: user.active_par,
     photo_identite: user.photo_identite,
     photo_url: user.photo_identite
   ? `${process.env.BASE_URL}/uploads/${user.photo_identite}`
@@ -111,13 +116,14 @@ const register = async (data) => {
                 hashedPassword,
 
             statut:
-                'actif',
+                'inactif',
 
             type_membre:
                 data.type_membre,
 
             role:
-                'membre'
+                'membre',
+            is_active: 1
         };
 
     const id =
@@ -149,23 +155,42 @@ const register = async (data) => {
     );
 
                 // 4. notification socket admin (temps réel)
-        notifyAdmins(
-            'admin:new_adhesion',
-            {
-                id: new_member.id,
-                nom: new_member.nom_complet,
-                email: new_member.email
-            }
-        );
+        notificationService.notifyAdmin({
+        
+                    membre_id:new_member.id,
+        
+                    titre: "Demande d'adhésion",
+        
+                    title: "Demande d'adhésion",
+        
+                    message: new_member.firstname+" a demandé de joindre l'IDEM Planéte.",
+        
+                    type: "adhésion",
+        
+                    reference_id:null,
+        
+                    lien: null
+        
+                })
 
-        notifyMember(
-            new_member.id,
-            'member:pending',
-            {
-                message:
-                     "Votre demande d'adhésion a été envoyée et attend la validation d'un administrateur."
-            }
-        );
+        notificationService.notifyOneMember({
+        
+                    membre_id:new_member.id,
+        
+                    titre: "Demande d'adhésion",
+        
+                    title: "Demande d'adhésion",
+        
+                    message: "Votre demande d'adhésion a été envoyée,vous recevrez de notification et email après la validation.",
+        
+                    type: "adhésion",
+        
+                    reference_id:null,
+        
+                    lien: null
+        
+                },new_member.id)
+      
 
     return {
         id,
@@ -200,7 +225,7 @@ const login = async (
         );
     }
 
-    if (user.statut !== 'actif') {
+    if (Number(user.is_active ) !== 1) {
 
         throw new Error(
             'Votre compte est en attente de validation'
@@ -232,7 +257,8 @@ const login = async (
             type_membre: user.type_membre,
             created_at:user.created_at,
             role: user.role,
-            statut: user.statut
+            statut: user.statut,
+            note: user.note
         }
     };
 };
@@ -280,10 +306,150 @@ const updatePassword = async (
 
 };
 
+const activeMembre = async (
+  userId,active_par
+) => {
+
+  
+
+
+  const response = await repository.update(
+    userId,{is_active:1,active_par:active_par}
+  );
+
+  const userConnected=await getMe(userId);
+
+    notificationService.notifyOneMember({
+
+            membre_id:userId,
+
+            titre: "Compte Activé",
+
+            title: "Compte Activé",
+
+            message: "Votre compte a été activé.",
+
+            type: "adhésion",
+
+            reference_id:null,
+
+            lien: null
+
+        },userId)
+
+  return {
+    ...response,
+    user: userConnected
+  };
+
+};
+
+const desactiveMembre = async (
+  userId,active_par
+) => {
+
+  
+
+
+  const response = await repository.update(
+    userId,{is_active:2,active_par:active_par}
+  );
+
+  const userConnected=await getMe(userId);
+
+     notificationService.notifyOneMember({
+
+            membre_id:userId,
+
+            titre: "Compte Desactivé ou Refusé",
+
+            title: "Compte Desactivé ou Refusé",
+
+            message: "Votre compte a été desactivé ou refusé,veuillez contactez l'admin pour la raison.",
+
+            type: "adhésion",
+
+            reference_id:null,
+
+            lien: null
+
+        },userId)
+
+  return {
+    ...response,
+    user: userConnected
+  };
+
+};
+
+/**
+ * LISTE ADMIN
+ * avec filtres + pagination
+ */
+const findAllAdmin = async(filters)=>{
+
+
+    const data =
+        await repository.findAllAdmin(
+            filters
+        );
+
+
+
+    const total =
+        await repository.countAll(
+            filters
+        );
+
+
+
+    const page =
+        Math.floor(
+            filters.offset / filters.limit
+        )
+        +
+        1;
+
+
+
+    return {
+
+        data,
+
+
+        pagination:{
+
+            page,
+
+            limit:
+                Number(filters.limit),
+
+            total,
+
+            pages:
+                Math.ceil(
+                    total /
+                    Number(filters.limit)
+                )
+
+        }
+
+    };
+
+
+};
+
+
+
+
+
 module.exports = {
     login,
     register,
     getMe,
     updatePhoto,
-    updatePassword
+    updatePassword,
+    activeMembre,
+    desactiveMembre,
+    findAllAdmin
 };

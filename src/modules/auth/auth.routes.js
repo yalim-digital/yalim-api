@@ -9,6 +9,11 @@ const validate =
 require('../../middlewares/validation.middleware');
 
 const {
+    isAdmin
+} =
+    require('../../middlewares/role.middleware');
+
+const {
     registerSchema
 } = require('./auth.validation');
 
@@ -23,6 +28,17 @@ const {
     '../../middlewares/auth.middleware'
 );
 
+router.get(
+
+    "/admin",
+
+    authenticate,
+
+    isAdmin,
+
+    controller.findAllAdmin
+
+);
 router.get(
     '/me',
     authenticate,
@@ -54,6 +70,22 @@ router.put(
   "/password-update",
   authenticate,
   controller.updatePassword
+);
+
+router.post(
+  "/active",
+  
+  authenticate,
+  isAdmin,
+  controller.activeMembre
+);
+
+router.post(
+  "/desactive",
+  
+  authenticate,
+  isAdmin,
+  controller.desactiveMembre
 );
 
 module.exports = router;

@@ -200,10 +200,154 @@ const me = async (req, res, next) => {
   }
 };
 
+const activeMembre =
+  async (req, res, next) => {
+
+    try {
+
+      const userId =
+        req.body.id;
+      const user =
+        await service.getMe(
+          userId
+        );
+        
+
+
+   
+      const result =
+        await service.activeMembre(
+          userId,req.user.id
+        );
+
+      res.json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+
+      next(error);
+
+    }
+
+};
+
+const desactiveMembre =
+  async (req, res, next) => {
+
+    try {
+
+      const userId =
+        req.body.id;
+      const user =
+        await service.getMe(
+          userId
+        );
+        
+
+
+   
+      const result =
+        await service.desactiveMembre(
+          userId,req.user.id
+        );
+
+      res.json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+
+      next(error);
+
+    }
+
+};
+
+
+const findAllAdmin = async(req,res)=>{
+
+
+    try{
+
+
+        const {
+
+            page = 1,
+
+            limit = 10,
+
+            recherche = "",
+
+            is_active = ""
+
+
+        } = req.query;
+
+
+
+
+
+        const offset =
+            (Number(page)-1)
+            *
+            Number(limit);
+
+
+
+
+
+
+
+        const result =
+            await service.findAllAdmin({
+
+                recherche,
+
+                is_active,
+
+                limit,
+
+                offset
+
+            });
+
+
+
+
+
+
+
+
+        res.json(result);
+
+
+
+
+
+    }
+    catch(error){
+
+
+        res.status(500).json({
+
+            message:error.message
+
+        });
+
+
+    }
+
+
+};
+
 module.exports = {
     login,
     me,
     register,
     updateProfilePhoto,
-    updatePassword
+    updatePassword,desactiveMembre,activeMembre,
+    findAllAdmin
 };

@@ -180,6 +180,68 @@ app.use(
     timelineRoutes
 );
 
+const IdentitesRoutes =
+require('./modules/identites/identites.routes');
+
+
+app.use(
+    "/api/identites",
+    IdentitesRoutes
+);
+
+const DomainesRoutes =
+require('./modules/domaines_actions/domainesActions.routes');
+
+
+app.use(
+    "/api/domaines-actions",
+    DomainesRoutes
+);
+
+const ProjetsRoutes =
+require('./modules/projets/projets.routes');
+
+
+app.use(
+    "/api/projets",
+    ProjetsRoutes
+);
+
+const PartenairesRoutes =
+require('./modules/partenaires/partenaires.routes');
+
+
+app.use(
+    "/api/partenaires",
+    PartenairesRoutes
+);
+
+const SettingsRoutes =
+require('./modules/settings/settings.routes');
+
+
+app.use(
+    "/api/settings",
+    SettingsRoutes
+);
+
+const NotificationRoutes =
+require('./modules/notifications/notification.routes');
+
+
+app.use(
+    "/api/notifications",
+    NotificationRoutes
+);
+
+const FamilyRoutes =
+require('./modules/family/family.routes');
+
+
+app.use(
+    "/api/family",
+    FamilyRoutes
+);
 
 app.use(errorHandler);
 
