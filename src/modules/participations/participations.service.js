@@ -6,6 +6,10 @@ const activitesRepository =
 const qrService =
     require('./qrcode.service');
 
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
 const participate = async (
     membreId,
     activiteId,
@@ -435,17 +439,35 @@ if(!participation){
 
 }
 
+
+
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+
+
+const nowMadagascar =
+    dayjs()
+    .tz("Indian/Antananarivo");
+
+
+
+const dateDebut =
+    dayjs(participation.date_debut)
+    .tz("Indian/Antananarivo");
+
+
+
 if(
-        new Date(
-            participation.date_debut
-        ) > new Date()
-    ){
+    dateDebut.isAfter(nowMadagascar)
+){
 
-        throw new Error(
-            "Impossible d'assister à une activité à venir"
-        );
+    throw new Error(
+        "Impossible d'assister à une activité à venir"
+    );
 
-    }
+}
 
 if(
 participation.qr_used
