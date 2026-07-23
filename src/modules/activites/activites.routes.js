@@ -39,6 +39,7 @@ const {
 // Membres
 router.get(
     '/',
+    authenticate,
     controller.getAll
 );
 

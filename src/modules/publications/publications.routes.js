@@ -40,7 +40,12 @@ router.get(
 );
 
 
-
+router.get(
+    '/admin',
+    authenticate,
+    isAdmin,
+    controller.getAll
+);
 
 
 
